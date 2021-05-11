@@ -11,7 +11,7 @@ The matching should cover the entire input string (not partial).
  */
 class Solution {
 
-    static boolean match = false;
+    private boolean reached = false;
 
     public List<String> pToList(String pattern) {
         List<String> patternList = new ArrayList<>();
@@ -54,6 +54,17 @@ class Solution {
         System.out.println(patternList);
         return patternList;
     }
+    
+    public List<String> compressPList(List<String> pList) {
+        for (int i = 0; i < pList.size()-1; i++) {
+            if (pList.get(i).equals(pList.get(i+1)) && pList.get(i).contains("*")) {
+                pList.remove(i);
+                i--;
+                continue;
+            }
+        }
+        return pList;
+    }
 
     public void recursiveTest(List<String> pList, String str) {
         for (int i = 0; i < pList.size(); i++) {
@@ -67,8 +78,8 @@ class Solution {
                         recursiveTest(pList.subList(i + 1, pList.size()), str.substring(j));
                     } else {
                         if (str.startsWith(tempPattern)) {
-                            System.out.println(j);
-                                System.out.println(pList.subList(i + 1, pList.size()));
+                            // System.out.println(j);
+                                // System.out.println(pList.subList(i + 1, pList.size()));
                             recursiveTest(pList.subList(i + 1, pList.size()), str.substring(j));
                         } else {
                             if (notdot) {
@@ -83,7 +94,7 @@ class Solution {
             } else {
                 if (str.length() > 0) {
                     if (str.startsWith(pList.get(i)) || pList.get(i).contains(".")) {
-                        System.out.println(pList.subList(i + 1, pList.size()));
+                        // System.out.println(pList.subList(i + 1, pList.size()));
 //                        System.out.println(str.substring(1));
                         recursiveTest(pList.subList(i + 1, pList.size()), str.substring(pList.get(i).length()));
                     } else {
@@ -96,14 +107,14 @@ class Solution {
             }
         }
         if (pList.isEmpty() && str.length() == 0) {
-            System.out.println("reached");
-            match = true;
+            // System.out.println("reached");
+            reached = true;
         }
     }
 
     public boolean isMatch(String s, String p) {
-        List<String> patternList = pToList(p);
+        List<String> patternList = compressPList(pToList(p));
         recursiveTest(patternList, s);
-        return match;
+        return reached;
     }
 }
